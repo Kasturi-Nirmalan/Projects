@@ -41,36 +41,39 @@ python rutherford_simulation.py
    - Click the "Add Fit Curve" button to compute and display a fit curve based on the simulated data.
 
 ### Screenshots
+![](images/Monte_Carlo_simulation.png)
 
+![](images/Analytical_curve_button.png)
+
+![](images/Fit_curve_button.png)
 
 ## Theory
 The simulation is based on the principles of Rutherford scattering, where alpha particles interact with the nucleus of atoms in the foil. The Monte Carlo approach is used to randomly sample scattering angles based on the Rutherford scattering formula:
 
-\[
-\frac{d\sigma}{d\Omega} \propto \frac{1}{(KE \cdot \sin^4(\theta/2))}
-\]
+$$
+N(\theta) = \frac{N_i a t}{16 r^2} \left( \frac{Z_1 Z_2 e^2}{4 \pi \epsilon_0 E_K} \right)^2 \csc^4 \left( \frac{\theta}{2} \right)
+$$
 
 where:
-- \(d\sigma/d\Omega\) is the differential cross-section
-- \(KE\) is the kinetic energy of the alpha particle
-- \(\theta\) is the scattering angle
-
-## Contributing
-Contributions are welcome! To contribute:
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Commit your changes and push to your fork.
-4. Submit a pull request.
-
-## License
-This project is licensed under the MIT License. See the LICENSE file for details.
+- $N_i$ = Number of alpha particles
+- t = Thickness of foil
+- a = Number of atoms per unit volume
+- r = Distance from detector to sheet
+- $\theta$ = Angle
+- $Z_1$ = 2
+- $Z_2$ = Atomic number of scattering foil
+- $e$ = Elementary Charge
+- $\epsilon_0$ = Vacuum permittivity
+- $E_K$ = 1/2 $Mv^2$
+- $M$ = Mass of alpha particle
+- $v$ = Speed of alpha particle
 
 ## Acknowledgments
-- Inspired by Rutherford's pioneering experiments.
-- Special thanks to open-source libraries and the Python community.
+- Inspired by Rutherford's experiments.
+- Thanks to open-source libraries and the Python community.
 
 ## Contact
 For any questions or suggestions, please contact:
-- **Your Name**
-- Email: your.email@example.com
-- GitHub: [yourusername](https://github.com/yourusername)
+- **Kasturi Nirmalan**
+- Email: kasturinirmalan09@gmail.com
+- GitHub: [Kasturi-Nirmalan](https://github.com/Kasturi-Nirmalan)
