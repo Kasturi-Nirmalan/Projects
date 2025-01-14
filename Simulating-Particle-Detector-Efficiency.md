@@ -101,14 +101,14 @@ bool isDetected(double energy, double threshold) {
 }
 
 // Function to simulate particle detection efficiency and store results in a histogram
-void analyzeEfficiency() {
+void analyseEfficiency() {
     TH1F *hist = new TH1F("detected", "Detection Efficiency", 2, 0, 2);
     hist->GetXaxis()->SetBinLabel(1, "Not Detected\n(Energy < 50 GeV)");
     hist->GetXaxis()->SetBinLabel(2, "Detected\n(Energy >= 50 GeV)");
 
     TRandom randGen;  // Random number generator
     int nEvents = 1000;  // Number of events to simulate
-    double detectionThreshold = 50.0;  // Minimum energy required for detection (increased threshold)
+    double detectionThreshold = 100.0;  // Minimum energy required for detection (increased threshold)
 
     int detectedCount = 0;
     int notDetectedCount = 0;
@@ -141,3 +141,95 @@ void analyzeEfficiency() {
     std::cout << "Detection Efficiency: " << efficiency << "%" << std::endl;
 }
 ```
+
+
+<img width="796" alt="Screenshot 2025-01-14 at 23 55 22" src="https://github.com/user-attachments/assets/fb65af2d-d1ba-44cc-a2fd-331726e34ff6" />
+
+<img width="196" alt="Screenshot 2025-01-14 at 23 57 01" src="https://github.com/user-attachments/assets/a20b5dab-235d-46cd-9397-5234f7f3815a" />
+
+## Debugging Code
+
+This was the code that I used to help me debug for errors. 
+
+1. Prints the energy level of every 100 events to make sure the energy were being randomly distributed.
+2. Prints the total events that were detected and not detected to check if the efficiency percentage was correct.
+
+```
+#include "TMath.h"
+#include "TRandom.h"
+#include "TH1F.h"
+#include "TFile.h"
+#include "TCanvas.h"
+#include <iostream>
+
+// Function to simulate detection based on energy threshold
+bool isDetected(double energy, double threshold) {
+    return energy >= threshold;  // Energy greater than or equal to threshold is detected
+}
+
+// Function to simulate particle detection efficiency and store results in a histogram
+void analyseEfficiency() {
+    // Create a histogram to store detection results: 0 for not detected, 1 for detected
+    TH1F *hist = new TH1F("detected", "Detection Efficiency", 2, 0, 2);
+    hist->GetXaxis()->SetBinLabel(1, "Not Detected\n(Energy < 50 GeV)");
+    hist->GetXaxis()->SetBinLabel(2, "Detected\n(Energy >= 50 GeV)");
+
+    // Simulate multiple events (e.g., 1000 events)
+    TRandom randGen;  // Random number generator
+    int nEvents = 1000;  // Number of events to simulate
+    double detectionThreshold = 50.0;  // Minimum energy required for detection (increased threshold)
+
+    int detectedCount = 0;
+    int notDetectedCount = 0;
+
+    for (int i = 0; i < nEvents; i++) {
+        // Generate a random energy between 0 and 200 GeV
+        double energy = randGen.Uniform(0, 200);
+
+        // Debugging: Print the energy for every 100th event
+        if (i % 100 == 0) { // Print energy for every 100th event
+            std::cout << "Energy of event " << i << ": " << energy << " GeV" << std::endl;
+        }
+
+        // Check if the particle is detected based on the energy
+        bool detected = isDetected(energy, detectionThreshold);
+        
+        // Increment count for detected particles
+        if (detected) {
+            detectedCount++;
+            hist->Fill(1);  // Fill the "Detected" bin (index 1)
+        } else {
+            notDetectedCount++;
+            hist->Fill(0);  // Fill the "Not Detected" bin (index 0)
+        }
+    }
+
+    // Debugging: Print the counts of detected and undetected particles
+    std::cout << "Detected Count: " << detectedCount << std::endl;
+    std::cout << "Not Detected Count: " << notDetectedCount << std::endl;
+
+    // Create a ROOT file to save the histogram
+    TFile *file = new TFile("efficiency.root", "RECREATE");
+    hist->Write();  // Save the histogram to the ROOT file
+    file->Close();  // Close the file
+
+    // Visualize the histogram
+    TCanvas *canvas = new TCanvas("canvas", "Detection Efficiency", 800, 600);
+    hist->SetFillColor(kBlue);  // Set the color of the bars
+    hist->Draw();  // Draw the histogram
+
+    // Customize axis labels
+    hist->GetXaxis()->SetTitle("Detection Status (Energy Threshold)");  // X-axis title
+    hist->GetYaxis()->SetTitle("Number of Events");  // Y-axis title
+
+    // Set Y-axis to start from 0 (ensure the range is correct)
+    hist->GetYaxis()->SetRangeUser(0, hist->GetMaximum() * 1.1);  // Adjust to start from 0
+
+    // Display the efficiency result
+    double efficiency = (double)detectedCount / nEvents * 100;  // Efficiency in percentage
+    std::cout << "Detection Efficiency: " << efficiency << "%" << std::endl;
+}
+```
+<img width="231" alt="Screenshot 2025-01-14 at 23 57 50" src="https://github.com/user-attachments/assets/384926ad-7a5e-477f-a05d-2eeb33e1e5a5" />
+
+
